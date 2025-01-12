@@ -1,9 +1,5 @@
-// index.js
-
-// Ensure dotenv and required modules are imported at the top
 require('dotenv').config();
 const express = require('express');
-const fetch = require('node-fetch');  // Import fetch for external requests
 const app = express();  // Initialize the express app
 
 // Enable CORS for remote testing
@@ -23,30 +19,19 @@ app.get('/api/hello', function (req, res) {
   res.json({ greeting: 'hello API' });
 });
 
-// Main /api/whoami endpoint with external fetch
-app.get('/api/whoami', async function(req, res){
+// Main /api/whoami endpoint
+app.get('/api/whoami', function(req, res){
+  // Get the required information from the request
   const ipAddress = req.ip;
   const reqLanguage = req.get('Accept-Language');
   const softwareInfo = req.get('User-Agent');
 
-  try {
-    // Fetch external data (make sure to correct the URL)
-    const externalResponse = await fetch('http://127.0.0.1:3000/api/whoami');
-    const responseBody = await externalResponse.text();  // Get the raw text response
-
-    // Try to parse the response if it's valid JSON
-    const externalData = JSON.parse(responseBody);  // Manually parse it
-
-    // Send the data back in JSON format
-    res.json({
-      ipaddress: ipAddress,
-      language: reqLanguage,
-      software: softwareInfo
-    });
-  } catch (err) {
-    console.log('Error fetching external data', err);
-    res.json({ err: 'Unable to fetch external data' });
-  }
+  // Send the data back as a JSON response
+  res.json({
+    ipaddress: ipAddress,
+    language: reqLanguage,
+    software: softwareInfo
+  });
 });
 
 // Start the server
